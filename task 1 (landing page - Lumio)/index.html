@@ -1,1 +1,1226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lumio — Think Clearly, Create Freely</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== RESET ===== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    /* ===== DESIGN TOKENS ===== */
+    :root {
+      --primary:       #6C63FF;
+      --primary-dark:  #5A52D5;
+      --accent:        #FF6584;
+      --dark:          #1A1A2E;
+      --text:          #374151;
+      --text-muted:    #6B7280;
+      --light-bg:      #F5F3FF;
+      --white:         #FFFFFF;
+      --border:        #E5E7EB;
+      --shadow:        0 4px 6px -1px rgba(0,0,0,.10), 0 2px 4px -1px rgba(0,0,0,.06);
+      --shadow-lg:     0 20px 25px -5px rgba(0,0,0,.10), 0 10px 10px -5px rgba(0,0,0,.04);
+      --radius:        12px;
+      --max-w:         1140px;
+    }
+
+    /* ===== BASE ===== */
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--white);
+    }
+
+    img  { max-width: 100%; display: block; }
+    a    { text-decoration: none; color: inherit; }
+    ul   { list-style: none; }
+
+    .container {
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ===== NAVIGATION ===== */
+    .nav {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 100;
+      background: rgba(255,255,255,.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav__inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+      max-width: var(--max-w);
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .nav__logo {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -.5px;
+    }
+    .nav__logo span { color: var(--accent); }
+
+    .nav__links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav__links a {
+      font-size: .9375rem;
+      font-weight: 500;
+      color: var(--text);
+      transition: color .2s;
+    }
+    .nav__links a:hover { color: var(--primary); }
+
+    .nav__cta {
+      background: var(--primary);
+      color: var(--white) !important;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-weight: 600 !important;
+      transition: background .2s, transform .15s !important;
+      box-shadow: 0 2px 8px rgba(108,99,255,.3);
+    }
+    .nav__cta:hover {
+      background: var(--primary-dark) !important;
+      transform: translateY(-1px);
+    }
+
+    /* ===== BUTTONS ===== */
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--primary);
+      color: var(--white);
+      padding: 14px 28px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      box-shadow: 0 4px 14px rgba(108,99,255,.35);
+    }
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(108,99,255,.4);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: transparent;
+      color: var(--text);
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 500;
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      transition: border-color .2s, color .2s;
+    }
+    .btn-secondary:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-white {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--white);
+      color: var(--primary);
+      padding: 14px 32px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .15s, box-shadow .2s;
+      box-shadow: 0 4px 14px rgba(0,0,0,.15);
+    }
+    .btn-white:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0,0,0,.2);
+    }
+
+    /* ===== SECTION COMMON ===== */
+    .section { padding: 96px 0; }
+
+    .section__eyebrow {
+      font-size: .8125rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--primary);
+      margin-bottom: 12px;
+    }
+
+    .section__title {
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      color: var(--dark);
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+
+    .section__subtitle {
+      font-size: 1.0625rem;
+      color: var(--text-muted);
+      line-height: 1.7;
+      max-width: 560px;
+    }
+
+    .section__header          { margin-bottom: 56px; }
+    .section__header--center  { text-align: center; }
+    .section__header--center .section__subtitle { margin: 0 auto; }
+
+    /* ===== HERO ===== */
+    .hero {
+      padding: 140px 0 80px;
+      background: linear-gradient(135deg, #F5F3FF 0%, #FFF0F3 100%);
+      overflow: hidden;
+    }
+
+    .hero__inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .hero__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 6px 16px;
+      font-size: .8125rem;
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: 20px;
+    }
+    .hero__badge::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--accent);
+      border-radius: 50%;
+    }
+
+    .hero__headline {
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -1.5px;
+      color: var(--dark);
+      margin-bottom: 20px;
+    }
+    .hero__headline em {
+      font-style: normal;
+      color: var(--primary);
+    }
+
+    .hero__sub {
+      font-size: 1.125rem;
+      color: var(--text-muted);
+      line-height: 1.75;
+      margin-bottom: 36px;
+      max-width: 460px;
+    }
+
+    .hero__actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .hero__social-proof {
+      margin-top: 40px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hero__avatars { display: flex; }
+
+    .hero__avatars span {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2.5px solid var(--white);
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .75rem;
+      font-weight: 700;
+      color: white;
+      margin-left: -10px;
+    }
+    .hero__avatars span:first-child { margin-left: 0; }
+    .hero__avatars span:nth-child(2) { background: #FF6584; }
+    .hero__avatars span:nth-child(3) { background: #43D9AD; color: #0F4C35; }
+    .hero__avatars span:nth-child(4) { background: #F59E0B; color: #451A03; }
+
+    .hero__social-text { font-size: .875rem; color: var(--text-muted); }
+    .hero__social-text strong { color: var(--dark); }
+
+    /* Hero visual */
+    .hero__visual { position: relative; }
+
+    .hero__card {
+      background: var(--white);
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+      padding: 28px;
+      border: 1px solid var(--border);
+    }
+
+    .hero__card-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot--red    { background: #FF5F57; }
+    .dot--yellow { background: #FFBD2E; }
+    .dot--green  { background: #28CA41; }
+
+    .note-block {
+      background: var(--light-bg);
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .note-block:last-child { margin-bottom: 0; }
+
+    .note-block__title {
+      font-size: .8125rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+
+    .note-block__bar {
+      height: 8px;
+      border-radius: 4px;
+      background: var(--border);
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+    .note-block__bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      background: var(--primary);
+    }
+
+    .note-block__tag {
+      display: inline-block;
+      background: rgba(108,99,255,.1);
+      color: var(--primary);
+      font-size: .6875rem;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    /* Floating cards */
+    .hero__floating {
+      position: absolute;
+      background: var(--white);
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--border);
+    }
+    .hero__floating--top    { top: -24px; right: -20px; }
+    .hero__floating--bottom { bottom: -20px; left: -20px; }
+
+    .float-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+    .float-icon--purple { background: rgba(108,99,255,.1); }
+    .float-icon--green  { background: rgba(67,217,173,.1); }
+
+    .float-text__label { font-size: .6875rem; color: var(--text-muted); }
+    .float-text__value { font-size: .875rem; font-weight: 700; color: var(--dark); }
+
+    /* ===== BRAND STRIP ===== */
+    .brands {
+      padding: 48px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .brands__label {
+      text-align: center;
+      font-size: .8125rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 24px;
+    }
+
+    .brands__logos {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    .brand-logo {
+      font-size: 1.125rem;
+      font-weight: 800;
+      color: #D1D5DB;
+      letter-spacing: -.5px;
+    }
+
+    /* ===== FEATURES ===== */
+    .features { background: var(--white); }
+
+    .features__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+    }
+
+    .feature-card {
+      padding: 32px;
+      border-radius: var(--radius);
+      border: 1.5px solid var(--border);
+      transition: border-color .2s, box-shadow .2s, transform .2s;
+    }
+    .feature-card:hover {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(108,99,255,.07);
+      transform: translateY(-4px);
+    }
+
+    .feature-card__icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: var(--light-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 20px;
+    }
+
+    .feature-card__title {
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+
+    .feature-card__desc {
+      font-size: .9375rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* ===== HOW IT WORKS ===== */
+    .how { background: var(--light-bg); }
+
+    .how__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .how__steps {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .step { display: flex; gap: 20px; }
+
+    .step__num {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--primary);
+      color: var(--white);
+      font-weight: 800;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .step__title {
+      font-size: 1.0625rem;
+      font-weight: 700;
+      color: var(--dark);
+      margin-bottom: 6px;
+    }
+
+    .step__desc {
+      font-size: .9375rem;
+      color: var(--text-muted);
+      line-height: 1.65;
+    }
+
+    /* How visual */
+    .how__visual {
+      background: var(--white);
+      border-radius: 20px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .how__visual-header {
+      background: var(--dark);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .how__visual-body { padding: 24px; }
+
+    .tag-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 600;
+    }
+    .tag--purple { background: rgba(108,99,255,.1); color: var(--primary); }
+    .tag--pink   { background: rgba(255,101,132,.1); color: var(--accent); }
+    .tag--green  { background: rgba(67,217,173,.1);  color: #059669; }
+    .tag--amber  { background: rgba(245,158,11,.1);  color: #B45309; }
+
+    .note-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      border: 1px solid var(--border);
+      transition: border-color .2s;
+    }
+    .note-item:last-child { margin-bottom: 0; }
+    .note-item:hover { border-color: var(--primary); }
+
+    .note-item__icon { font-size: 1.25rem; flex-shrink: 0; }
+
+    .note-item__label {
+      font-size: .8125rem;
+      font-weight: 600;
+      color: var(--dark);
+    }
+    .note-item__sub { font-size: .75rem; color: var(--text-muted); }
+
+    /* ===== TESTIMONIALS ===== */
+    .testimonials { background: var(--dark); }
+
+    .testimonials .section__eyebrow { color: rgba(162,155,255,.9); }
+    .testimonials .section__title   { color: var(--white); }
+    .testimonials .section__subtitle{ color: rgba(255,255,255,.55); }
+
+    .testimonials__grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+    }
+
+    .testi-card {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: var(--radius);
+      padding: 28px;
+      transition: background .2s, transform .2s;
+    }
+    .testi-card:hover {
+      background: rgba(255,255,255,.08);
+      transform: translateY(-4px);
+    }
+
+    .testi-card__stars {
+      color: #F59E0B;
+      font-size: .875rem;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+    }
+
+    .testi-card__quote {
+      font-size: .9375rem;
+      line-height: 1.7;
+      color: rgba(255,255,255,.8);
+      margin-bottom: 24px;
+      font-style: italic;
+    }
+
+    .testi-card__author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .testi-card__avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .testi-card__name {
+      font-size: .9375rem;
+      font-weight: 700;
+      color: var(--white);
+    }
+    .testi-card__role { font-size: .8125rem; color: rgba(255,255,255,.45); }
+
+    /* ===== CTA BANNER ===== */
+    .cta-banner {
+      background: linear-gradient(135deg, var(--primary) 0%, #8B5CF6 100%);
+      padding: 88px 0;
+      text-align: center;
+    }
+
+    .cta-banner__title {
+      font-size: clamp(1.75rem, 3vw, 2.5rem);
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .cta-banner__sub {
+      font-size: 1.0625rem;
+      color: rgba(255,255,255,.8);
+      margin-bottom: 36px;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background: #0F0F1A;
+      color: rgba(255,255,255,.5);
+      padding: 64px 0 32px;
+    }
+
+    .footer__grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      margin-bottom: 48px;
+    }
+
+    .footer__brand-name {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 12px;
+    }
+    .footer__brand-name span { color: var(--accent); }
+
+    .footer__brand-desc {
+      font-size: .9rem;
+      line-height: 1.7;
+      margin-bottom: 24px;
+    }
+
+    .footer__socials { display: flex; gap: 10px; }
+
+    .footer__social {
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .875rem;
+      font-weight: 700;
+      color: rgba(255,255,255,.5);
+      transition: background .2s, color .2s, border-color .2s;
+    }
+    .footer__social:hover {
+      background: var(--primary);
+      color: var(--white);
+      border-color: var(--primary);
+    }
+
+    .footer__col-title {
+      font-size: .8125rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--white);
+      margin-bottom: 20px;
+    }
+
+    .footer__links { display: flex; flex-direction: column; gap: 10px; }
+
+    .footer__links a {
+      font-size: .9rem;
+      color: rgba(255,255,255,.45);
+      transition: color .2s;
+    }
+    .footer__links a:hover { color: var(--white); }
+
+    .footer__bottom {
+      border-top: 1px solid rgba(255,255,255,.08);
+      padding-top: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer__copy { font-size: .875rem; }
+
+    .footer__legal { display: flex; gap: 24px; }
+
+    .footer__legal a {
+      font-size: .875rem;
+      color: rgba(255,255,255,.35);
+      transition: color .2s;
+    }
+    .footer__legal a:hover { color: rgba(255,255,255,.75); }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 1024px) {
+      .features__grid      { grid-template-columns: repeat(2, 1fr); }
+      .footer__grid        { grid-template-columns: 1fr 1fr; gap: 32px; }
+      .how__grid           { gap: 48px; }
+    }
+
+    @media (max-width: 768px) {
+      /* Hide nav links on small screens — pure CSS approach */
+      .nav__links { display: none; }
+
+      /* Simple mobile nav: show a compact version */
+      .nav__inner { justify-content: space-between; }
+
+      .hero { padding: 110px 0 60px; }
+
+      .hero__inner {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .hero__visual { order: -1; }
+
+      .hero__floating--top    { right: 8px;  top: -16px; }
+      .hero__floating--bottom { left: 8px; bottom: -16px; }
+
+      .features__grid       { grid-template-columns: 1fr; }
+      .testimonials__grid   { grid-template-columns: 1fr; }
+
+      .how__grid { grid-template-columns: 1fr; gap: 40px; }
+
+      .section { padding: 64px 0; }
+
+      .footer__grid {
+        grid-template-columns: 1fr;
+        gap: 28px;
+      }
+
+      .footer__bottom {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero__actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        justify-content: center;
+      }
+
+      .brands__logos { gap: 24px; }
+    }
+
+    /* ===== NAV MOBILE FALLBACK ===== */
+    /* On narrow screens show just the CTA as a compact button */
+    @media (max-width: 768px) {
+      .nav__mobile-cta {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 16px;
+        background: var(--primary);
+        color: var(--white);
+        border-radius: 8px;
+        font-size: .875rem;
+        font-weight: 600;
+      }
+    }
+    @media (min-width: 769px) {
+      .nav__mobile-cta { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+       NAVIGATION
+  ============================================================ -->
+  <nav class="nav" aria-label="Main navigation">
+    <div class="nav__inner">
+      <a href="#home" class="nav__logo">Lumi<span>o</span></a>
+
+      <!-- Desktop links -->
+      <ul class="nav__links">
+        <li><a href="#features">Features</a></li>
+        <li><a href="#how-it-works">How It Works</a></li>
+        <li><a href="#testimonials">Reviews</a></li>
+        <li><a href="#get-started" class="nav__cta">Get Started Free</a></li>
+      </ul>
+
+      <!-- Mobile CTA only -->
+      <a href="#get-started" class="nav__mobile-cta">Start Free →</a>
+    </div>
+  </nav>
+
+  <!-- ============================================================
+       HERO
+  ============================================================ -->
+  <section class="hero" id="home">
+    <div class="container">
+      <div class="hero__inner">
+
+        <!-- Copy -->
+        <div class="hero__content">
+          <div class="hero__badge">New · AI-Powered Knowledge</div>
+
+          <h1 class="hero__headline">
+            Think clearly,<br>
+            <em>create freely.</em>
+          </h1>
+
+          <p class="hero__sub">
+            Lumio is the note-taking app that connects your ideas automatically — so you can focus on thinking, not organising.
+          </p>
+
+          <div class="hero__actions">
+            <a href="#get-started" class="btn-primary">✦ Start for free</a>
+            <a href="#how-it-works" class="btn-secondary">→ See how it works</a>
+          </div>
+
+          <div class="hero__social-proof">
+            <div class="hero__avatars">
+              <span aria-hidden="true">JK</span>
+              <span aria-hidden="true">MP</span>
+              <span aria-hidden="true">AL</span>
+              <span aria-hidden="true">RB</span>
+            </div>
+            <p class="hero__social-text">Loved by <strong>12,000+</strong> thinkers worldwide</p>
+          </div>
+        </div>
+
+        <!-- Visual -->
+        <div class="hero__visual" aria-hidden="true">
+          <div class="hero__floating hero__floating--top">
+            <div class="float-icon float-icon--purple">⚡</div>
+            <div class="float-text">
+              <div class="float-text__label">Auto-linked notes</div>
+              <div class="float-text__value">+48 connections</div>
+            </div>
+          </div>
+
+          <div class="hero__card">
+            <div class="hero__card-header">
+              <div class="dot dot--red"></div>
+              <div class="dot dot--yellow"></div>
+              <div class="dot dot--green"></div>
+            </div>
+
+            <div class="note-block">
+              <div class="note-block__title">📌 Product Research Q4</div>
+              <div class="note-block__bar">
+                <div class="note-block__bar-fill" style="width:72%"></div>
+              </div>
+              <span class="note-block__tag">In Progress · 72%</span>
+            </div>
+
+            <div class="note-block" style="background:#FFF0F3">
+              <div class="note-block__title">💡 Ideas — Growth Hacking</div>
+              <div class="note-block__bar">
+                <div class="note-block__bar-fill" style="width:40%; background:var(--accent)"></div>
+              </div>
+              <span class="note-block__tag" style="background:rgba(255,101,132,.1); color:var(--accent)">Draft · 40%</span>
+            </div>
+
+            <div class="note-block" style="background:#ECFDF5">
+              <div class="note-block__title">✅ Weekly Review — Done</div>
+              <div class="note-block__bar">
+                <div class="note-block__bar-fill" style="width:100%; background:#059669"></div>
+              </div>
+              <span class="note-block__tag" style="background:rgba(5,150,105,.1); color:#059669">Complete · 100%</span>
+            </div>
+          </div>
+
+          <div class="hero__floating hero__floating--bottom">
+            <div class="float-icon float-icon--green">🔥</div>
+            <div class="float-text">
+              <div class="float-text__label">Writing streak</div>
+              <div class="float-text__value">14 days</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       BRAND STRIP
+  ============================================================ -->
+  <div class="brands">
+    <div class="container">
+      <p class="brands__label">Trusted by teams at</p>
+      <div class="brands__logos">
+        <span class="brand-logo">Notion</span>
+        <span class="brand-logo">Linear</span>
+        <span class="brand-logo">Vercel</span>
+        <span class="brand-logo">Stripe</span>
+        <span class="brand-logo">Figma</span>
+        <span class="brand-logo">GitHub</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       FEATURES
+  ============================================================ -->
+  <section class="section features" id="features">
+    <div class="container">
+      <div class="section__header section__header--center">
+        <p class="section__eyebrow">Features</p>
+        <h2 class="section__title">Everything you need to capture<br>your best thinking</h2>
+        <p class="section__subtitle">Lumio combines smart linking, beautiful writing, and powerful organisation into one seamless workspace.</p>
+      </div>
+
+      <div class="features__grid">
+        <div class="feature-card">
+          <div class="feature-card__icon">🔗</div>
+          <h3 class="feature-card__title">Auto-Linking</h3>
+          <p class="feature-card__desc">Lumio automatically detects connections between your notes and surfaces related ideas as you write — no manual tagging needed.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">✍️</div>
+          <h3 class="feature-card__title">Distraction-Free Editor</h3>
+          <p class="feature-card__desc">A clean, minimal writing environment that gets out of your way. Markdown, slash commands, and rich embeds all built in.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">🧠</div>
+          <h3 class="feature-card__title">AI Summarisation</h3>
+          <p class="feature-card__desc">Let AI distil long notes into crisp summaries, surface key insights, and suggest follow-up questions to deepen your thinking.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">🗂️</div>
+          <h3 class="feature-card__title">Flexible Organisation</h3>
+          <p class="feature-card__desc">Use folders, tags, or graph view — choose what works for your brain. Switch between structures without losing any data.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">🔒</div>
+          <h3 class="feature-card__title">Private by Default</h3>
+          <p class="feature-card__desc">End-to-end encryption on every note. Your thoughts belong to you — not advertisers. Zero-knowledge architecture throughout.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-card__icon">🌍</div>
+          <h3 class="feature-card__title">Works Everywhere</h3>
+          <p class="feature-card__desc">Available on Mac, Windows, iOS, and Android. Offline-first with instant sync when you reconnect — your notes are always with you.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       HOW IT WORKS
+  ============================================================ -->
+  <section class="section how" id="how-it-works">
+    <div class="container">
+      <div class="how__grid">
+
+        <!-- Steps -->
+        <div>
+          <div class="section__header">
+            <p class="section__eyebrow">How It Works</p>
+            <h2 class="section__title">From scattered thoughts to connected knowledge</h2>
+            <p class="section__subtitle">Get set up in minutes and start capturing ideas that actually stick.</p>
+          </div>
+
+          <div class="how__steps">
+            <div class="step">
+              <div class="step__num">1</div>
+              <div class="step__content">
+                <h4 class="step__title">Capture your ideas fast</h4>
+                <p class="step__desc">Jot notes in seconds with our quick-capture shortcut. Voice memos, text, or images — Lumio handles all formats.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step__num">2</div>
+              <div class="step__content">
+                <h4 class="step__title">Let Lumio find the connections</h4>
+                <p class="step__desc">Our AI reads across your entire knowledge base and surfaces relevant notes, ideas, and patterns automatically.</p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step__num">3</div>
+              <div class="step__content">
+                <h4 class="step__title">Build your second brain</h4>
+                <p class="step__desc">Watch your knowledge grow into an interconnected web. Rediscover old ideas at exactly the right moment.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual mockup -->
+        <div class="how__visual" aria-hidden="true">
+          <div class="how__visual-header">
+            <div class="dot dot--red"></div>
+            <div class="dot dot--yellow"></div>
+            <div class="dot dot--green"></div>
+          </div>
+          <div class="how__visual-body">
+            <div class="tag-row">
+              <span class="tag tag--purple">📚 Research</span>
+              <span class="tag tag--pink">💡 Ideas</span>
+              <span class="tag tag--green">✅ Done</span>
+              <span class="tag tag--amber">⏳ Review</span>
+            </div>
+            <div class="note-item">
+              <div class="note-item__icon">📖</div>
+              <div>
+                <div class="note-item__label">Deep Work — Cal Newport</div>
+                <div class="note-item__sub">3 linked notes · Updated 2h ago</div>
+              </div>
+            </div>
+            <div class="note-item">
+              <div class="note-item__icon">💡</div>
+              <div>
+                <div class="note-item__label">Newsletter idea — Flow states</div>
+                <div class="note-item__sub">7 linked notes · Updated yesterday</div>
+              </div>
+            </div>
+            <div class="note-item">
+              <div class="note-item__icon">🧪</div>
+              <div>
+                <div class="note-item__label">Experiment: Morning routines</div>
+                <div class="note-item__sub">5 linked notes · Updated 3d ago</div>
+              </div>
+            </div>
+            <div class="note-item">
+              <div class="note-item__icon">📊</div>
+              <div>
+                <div class="note-item__label">Q3 Goals &amp; Metrics</div>
+                <div class="note-item__sub">12 linked notes · Updated 1w ago</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       TESTIMONIALS
+  ============================================================ -->
+  <section class="section testimonials" id="testimonials">
+    <div class="container">
+      <div class="section__header section__header--center">
+        <p class="section__eyebrow">Testimonials</p>
+        <h2 class="section__title">Trusted by 12,000+ thinkers</h2>
+        <p class="section__subtitle">From writers to engineers to founders — here's what people say about Lumio.</p>
+      </div>
+
+      <div class="testimonials__grid">
+        <article class="testi-card">
+          <div class="testi-card__stars" aria-label="5 stars">★★★★★</div>
+          <p class="testi-card__quote">"Lumio changed how I write. I used to lose half my ideas between capturing them and developing them. Now everything flows together naturally."</p>
+          <div class="testi-card__author">
+            <div class="testi-card__avatar" aria-hidden="true">SR</div>
+            <div>
+              <div class="testi-card__name">Sarah Reeves</div>
+              <div class="testi-card__role">UX Writer @ Figma</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="testi-card">
+          <div class="testi-card__stars" aria-label="5 stars">★★★★★</div>
+          <p class="testi-card__quote">"The auto-linking feature is genuinely magical. Notes I wrote six months ago suddenly became relevant to a problem I was solving today. My mind was blown."</p>
+          <div class="testi-card__author">
+            <div class="testi-card__avatar" style="background:#FF6584" aria-hidden="true">DM</div>
+            <div>
+              <div class="testi-card__name">David Mensah</div>
+              <div class="testi-card__role">Software Engineer @ Linear</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="testi-card">
+          <div class="testi-card__stars" aria-label="5 stars">★★★★★</div>
+          <p class="testi-card__quote">"I've tried every note-taking app. Lumio is the first one I've actually stuck with for over a year. The writing experience alone is worth every penny."</p>
+          <div class="testi-card__author">
+            <div class="testi-card__avatar" style="background:#43D9AD; color:#0F4C35" aria-hidden="true">AL</div>
+            <div>
+              <div class="testi-card__name">Aisha Laurent</div>
+              <div class="testi-card__role">Founder @ Bloomstack</div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       CTA BANNER
+  ============================================================ -->
+  <section class="cta-banner" id="get-started">
+    <div class="container">
+      <h2 class="cta-banner__title">Your best thinking starts here.</h2>
+      <p class="cta-banner__sub">Join 12,000+ thinkers who've already made Lumio their second brain. Free forever — no credit card required.</p>
+      <a href="#" class="btn-white">✦ Get started for free →</a>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       FOOTER
+  ============================================================ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+
+        <!-- Brand col -->
+        <div>
+          <div class="footer__brand-name">Lumi<span>o</span></div>
+          <p class="footer__brand-desc">The note-taking app that connects your ideas automatically. Built for thinkers who want to do their best work.</p>
+          <div class="footer__socials">
+            <a href="#" class="footer__social" aria-label="Twitter / X">𝕏</a>
+            <a href="#" class="footer__social" aria-label="LinkedIn">in</a>
+            <a href="#" class="footer__social" aria-label="GitHub">gh</a>
+            <a href="#" class="footer__social" aria-label="YouTube">▶</a>
+          </div>
+        </div>
+
+        <!-- Product col -->
+        <div>
+          <h4 class="footer__col-title">Product</h4>
+          <ul class="footer__links">
+            <li><a href="#">Features</a></li>
+            <li><a href="#">How It Works</a></li>
+            <li><a href="#">Pricing</a></li>
+            <li><a href="#">Changelog</a></li>
+            <li><a href="#">Roadmap</a></li>
+          </ul>
+        </div>
+
+        <!-- Company col -->
+        <div>
+          <h4 class="footer__col-title">Company</h4>
+          <ul class="footer__links">
+            <li><a href="#">About</a></li>
+            <li><a href="#">Blog</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Press</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+
+        <!-- Support col -->
+        <div>
+          <h4 class="footer__col-title">Support</h4>
+          <ul class="footer__links">
+            <li><a href="#">Help Centre</a></li>
+            <li><a href="#">Community</a></li>
+            <li><a href="#">API Docs</a></li>
+            <li><a href="#">Status</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer__bottom">
+        <p class="footer__copy">© 2026 Lumio, Inc. All rights reserved.</p>
+        <div class="footer__legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
 
