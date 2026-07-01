@@ -1,1 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Temperature Converter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== RESET ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+
+    /* ===== PAGE ===== */
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 50%, #0F0F1A 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    /* ===== CARD ===== */
+    .card {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 40px;
+      width: 100%;
+      max-width: 560px;
+      box-shadow: 0 32px 64px rgba(0, 0, 0, 0.5);
+    }
+
+    /* ===== HEADER ===== */
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .header__icon {
+      font-size: 3rem;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+
+    .header__title {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: #1A1A2E;
+      letter-spacing: -0.75px;
+      margin-bottom: 6px;
+    }
+
+    .header__sub {
+      font-size: 0.9375rem;
+      color: #6B7280;
+    }
+
+    /* ===== INPUT SECTION ===== */
+    .input-section {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.75px;
+      color: #374151;
+      margin-bottom: 8px;
+    }
+
+    /* Number input */
+    .temp-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid #E5E7EB;
+      border-radius: 12px;
+      font-size: 1.25rem;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      color: #1A1A2E;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      appearance: textfield; /* hide spinners on some browsers */
+    }
+
+    .temp-input::-webkit-outer-spin-button,
+    .temp-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+    .temp-input::placeholder {
+      color: #D1D5DB;
+      font-weight: 400;
+    }
+
+    .temp-input:focus {
+      border-color: #6C63FF;
+      box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.12);
+    }
+
+    .temp-input.is-error {
+      border-color: #EF4444;
+      box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.10);
+    }
+
+    /* Inline input error */
+    .input-error {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      margin-top: 8px;
+      color: #DC2626;
+      font-size: 0.8125rem;
+      font-weight: 500;
+    }
+
+    .input-error.visible { display: flex; }
+
+    /* ===== UNIT TABS ===== */
+    .unit-tabs {
+      display: flex;
+      gap: 10px;
+    }
+
+    .unit-tab {
+      flex: 1;
+    }
+
+    /* Hide actual radio */
+    .unit-tab__radio {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .unit-tab__label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      padding: 12px 8px;
+      border: 2px solid #E5E7EB;
+      border-radius: 12px;
+      cursor: pointer;
+      background: #F9FAFB;
+      transition: border-color 0.2s, background 0.2s;
+      user-select: none;
+    }
+
+    .unit-tab__label:hover {
+      border-color: #6C63FF;
+      background: rgba(108, 99, 255, 0.05);
+    }
+
+    .unit-tab__radio:checked + .unit-tab__label {
+      border-color: #6C63FF;
+      background: rgba(108, 99, 255, 0.08);
+    }
+
+    .unit-tab__symbol {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #374151;
+      transition: color 0.2s;
+    }
+
+    .unit-tab__radio:checked + .unit-tab__label .unit-tab__symbol {
+      color: #6C63FF;
+    }
+
+    .unit-tab__name {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: #9CA3AF;
+      transition: color 0.2s;
+    }
+
+    .unit-tab__radio:checked + .unit-tab__label .unit-tab__name {
+      color: #6C63FF;
+    }
+
+    /* ===== CONVERT BUTTON ===== */
+    .convert-btn {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #6C63FF 0%, #8B5CF6 100%);
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.25px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(108, 99, 255, 0.4);
+      transition: transform 0.15s, box-shadow 0.2s;
+    }
+
+    .convert-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(108, 99, 255, 0.45);
+    }
+
+    .convert-btn:active { transform: translateY(0); }
+
+    /* ===== DIVIDER ===== */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 28px 0 24px;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #E5E7EB;
+    }
+
+    .divider__label {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.25px;
+      color: #9CA3AF;
+    }
+
+    /* ===== RESULT CARDS ===== */
+    .results {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .result-card {
+      border-radius: 16px;
+      padding: 20px 12px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+
+    .result-card:hover { transform: translateY(-3px); }
+
+    /* Celsius — blue */
+    .result-card--c {
+      background: linear-gradient(160deg, #EFF6FF, #DBEAFE);
+      border: 1.5px solid #BFDBFE;
+    }
+
+    /* Fahrenheit — orange */
+    .result-card--f {
+      background: linear-gradient(160deg, #FFF7ED, #FFEDD5);
+      border: 1.5px solid #FED7AA;
+    }
+
+    /* Kelvin — purple */
+    .result-card--k {
+      background: linear-gradient(160deg, #F5F3FF, #EDE9FE);
+      border: 1.5px solid #DDD6FE;
+    }
+
+    .result-card__emoji {
+      font-size: 1.375rem;
+      margin-bottom: 6px;
+      line-height: 1;
+    }
+
+    .result-card__name {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.75px;
+      margin-bottom: 10px;
+    }
+
+    .result-card--c .result-card__name { color: #1D4ED8; }
+    .result-card--f .result-card__name { color: #C2410C; }
+    .result-card--k .result-card__name { color: #6D28D9; }
+
+    .result-card__value {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      line-height: 1.1;
+      min-height: 1.65rem;
+    }
+
+    .result-card--c .result-card__value { color: #1E40AF; }
+    .result-card--f .result-card__value { color: #9A3412; }
+    .result-card--k .result-card__value { color: #5B21B6; }
+
+    .result-card__unit {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .result-card--c .result-card__unit { color: #3B82F6; }
+    .result-card--f .result-card__unit { color: #F97316; }
+    .result-card--k .result-card__unit { color: #8B5CF6; }
+
+    .placeholder-dash {
+      color: #D1D5DB;
+      font-weight: 400;
+    }
+
+    /* ===== ABSOLUTE ZERO ERROR ===== */
+    .abs-error {
+      display: none;
+      align-items: flex-start;
+      gap: 12px;
+      margin-top: 16px;
+      background: #FEF2F2;
+      border: 1.5px solid #FECACA;
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .abs-error.visible { display: flex; }
+
+    .abs-error__icon { font-size: 1.25rem; flex-shrink: 0; margin-top: 1px; }
+
+    .abs-error__title {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: #991B1B;
+      margin-bottom: 4px;
+    }
+
+    .abs-error__desc {
+      font-size: 0.8125rem;
+      color: #B91C1C;
+      line-height: 1.55;
+    }
+
+    /* ===== QUICK REFERENCE ===== */
+    .quick-ref {
+      margin-top: 24px;
+      padding: 16px;
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
+      border-radius: 14px;
+    }
+
+    .quick-ref__title {
+      font-size: 0.6875rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.75px;
+      color: #9CA3AF;
+      margin-bottom: 12px;
+    }
+
+    .quick-ref__grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .quick-ref__btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-family: 'Inter', sans-serif;
+      text-align: left;
+      transition: background 0.15s;
+      width: 100%;
+    }
+
+    .quick-ref__btn:hover { background: #E5E7EB; }
+
+    .quick-ref__emoji { font-size: 1rem; flex-shrink: 0; }
+
+    .quick-ref__info { flex: 1; min-width: 0; }
+
+    .quick-ref__name {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: #374151;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .quick-ref__temp {
+      font-size: 0.6875rem;
+      color: #9CA3AF;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 480px) {
+      .card { padding: 28px 20px; }
+
+      .results { grid-template-columns: 1fr; }
+
+      .result-card {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px;
+        text-align: left;
+      }
+
+      .result-card__value { font-size: 1.375rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="header__icon">🌡️</div>
+      <h1 class="header__title">Temperature Converter</h1>
+      <p class="header__sub">Convert between Celsius, Fahrenheit &amp; Kelvin</p>
+    </div>
+
+    <!-- Input -->
+    <div class="input-section">
+
+      <!-- Value field -->
+      <div>
+        <label class="field-label" for="tempInput">Temperature Value</label>
+        <input
+          type="text"
+          id="tempInput"
+          class="temp-input"
+          placeholder="e.g. 100"
+          autocomplete="off"
+          inputmode="decimal"
+        />
+        <div class="input-error" id="inputError">
+          <span>⚠️</span>
+          <span id="inputErrorMsg">Please enter a valid number.</span>
+        </div>
+      </div>
+
+      <!-- Unit selector -->
+      <div>
+        <label class="field-label">Input Unit</label>
+        <div class="unit-tabs">
+
+          <div class="unit-tab">
+            <input class="unit-tab__radio" type="radio" name="unit" id="unitC" value="C" checked />
+            <label class="unit-tab__label" for="unitC">
+              <span class="unit-tab__symbol">°C</span>
+              <span class="unit-tab__name">Celsius</span>
+            </label>
+          </div>
+
+          <div class="unit-tab">
+            <input class="unit-tab__radio" type="radio" name="unit" id="unitF" value="F" />
+            <label class="unit-tab__label" for="unitF">
+              <span class="unit-tab__symbol">°F</span>
+              <span class="unit-tab__name">Fahrenheit</span>
+            </label>
+          </div>
+
+          <div class="unit-tab">
+            <input class="unit-tab__radio" type="radio" name="unit" id="unitK" value="K" />
+            <label class="unit-tab__label" for="unitK">
+              <span class="unit-tab__symbol">K</span>
+              <span class="unit-tab__name">Kelvin</span>
+            </label>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Button -->
+      <button class="convert-btn" id="convertBtn">Convert Temperature →</button>
+
+    </div>
+
+    <!-- Divider -->
+    <div class="divider">
+      <span class="divider__label">Results</span>
+    </div>
+
+    <!-- Result cards -->
+    <div class="results">
+
+      <div class="result-card result-card--c">
+        <div class="result-card__emoji">🔵</div>
+        <div class="result-card__name">Celsius</div>
+        <div class="result-card__value" id="valC"><span class="placeholder-dash">—</span></div>
+        <div class="result-card__unit">°C</div>
+      </div>
+
+      <div class="result-card result-card--f">
+        <div class="result-card__emoji">🟠</div>
+        <div class="result-card__name">Fahrenheit</div>
+        <div class="result-card__value" id="valF"><span class="placeholder-dash">—</span></div>
+        <div class="result-card__unit">°F</div>
+      </div>
+
+      <div class="result-card result-card--k">
+        <div class="result-card__emoji">🟣</div>
+        <div class="result-card__name">Kelvin</div>
+        <div class="result-card__value" id="valK"><span class="placeholder-dash">—</span></div>
+        <div class="result-card__unit">K</div>
+      </div>
+
+    </div>
+
+    <!-- Absolute zero error -->
+    <div class="abs-error" id="absError">
+      <div class="abs-error__icon">❄️</div>
+      <div>
+        <div class="abs-error__title">Below Absolute Zero!</div>
+        <div class="abs-error__desc">
+          This temperature cannot exist in the physical world.
+          Absolute zero is −273.15 °C / −459.67 °F / 0 K — nothing can be colder.
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick reference -->
+    <div class="quick-ref">
+      <div class="quick-ref__title">Quick Reference — click to load</div>
+      <div class="quick-ref__grid">
+
+        <button class="quick-ref__btn" onclick="loadPreset(100, 'C')">
+          <span class="quick-ref__emoji">♨️</span>
+          <div class="quick-ref__info">
+            <div class="quick-ref__name">Boiling Point</div>
+            <div class="quick-ref__temp">100 °C</div>
+          </div>
+        </button>
+
+        <button class="quick-ref__btn" onclick="loadPreset(0, 'C')">
+          <span class="quick-ref__emoji">🧊</span>
+          <div class="quick-ref__info">
+            <div class="quick-ref__name">Freezing Point</div>
+            <div class="quick-ref__temp">0 °C</div>
+          </div>
+        </button>
+
+        <button class="quick-ref__btn" onclick="loadPreset(37, 'C')">
+          <span class="quick-ref__emoji">🧬</span>
+          <div class="quick-ref__info">
+            <div class="quick-ref__name">Body Temperature</div>
+            <div class="quick-ref__temp">37 °C</div>
+          </div>
+        </button>
+
+        <button class="quick-ref__btn" onclick="loadPreset(-273.15, 'C')">
+          <span class="quick-ref__emoji">⚛️</span>
+          <div class="quick-ref__info">
+            <div class="quick-ref__name">Absolute Zero</div>
+            <div class="quick-ref__temp">−273.15 °C</div>
+          </div>
+        </button>
+
+      </div>
+    </div>
+
+  </div><!-- /card -->
+
+  <script>
+    // ── DOM refs ──────────────────────────────────────────────────────────────
+    const inputEl      = document.getElementById('tempInput');
+    const inputErrEl   = document.getElementById('inputError');
+    const inputErrMsg  = document.getElementById('inputErrorMsg');
+    const absErrEl     = document.getElementById('absError');
+    const valC         = document.getElementById('valC');
+    const valF         = document.getElementById('valF');
+    const valK         = document.getElementById('valK');
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+    function getUnit() {
+      return document.querySelector('input[name="unit"]:checked').value;
+    }
+
+    function showInputError(msg) {
+      inputEl.classList.add('is-error');
+      inputErrMsg.textContent = msg;
+      inputErrEl.classList.add('visible');
+    }
+
+    function clearInputError() {
+      inputEl.classList.remove('is-error');
+      inputErrEl.classList.remove('visible');
+    }
+
+    function showAbsError()  { absErrEl.classList.add('visible'); }
+    function hideAbsError()  { absErrEl.classList.remove('visible'); }
+
+    function clearResults() {
+      const dash = '<span class="placeholder-dash">—</span>';
+      valC.innerHTML = dash;
+      valF.innerHTML = dash;
+      valK.innerHTML = dash;
+    }
+
+    function fmt(n) {
+      // Up to 4 decimal places, trimming trailing zeros
+      return parseFloat(n.toFixed(4)).toString();
+    }
+
+    // ── Conversion ────────────────────────────────────────────────────────────
+    function toCelsius(val, unit) {
+      if (unit === 'C') return val;
+      if (unit === 'F') return (val - 32) * 5 / 9;
+      if (unit === 'K') return val - 273.15;
+    }
+
+    function doConvert() {
+      const raw = inputEl.value.trim();
+
+      // Empty
+      if (raw === '') {
+        clearInputError();
+        clearResults();
+        hideAbsError();
+        return;
+      }
+
+      // Non-numeric (letters, symbols, etc.)
+      if (isNaN(raw) || raw === '') {
+        showInputError('Numbers only — remove any letters or symbols.');
+        clearResults();
+        hideAbsError();
+        return;
+      }
+
+      const num = parseFloat(raw);
+
+      // Infinity / NaN guard
+      if (!isFinite(num)) {
+        showInputError('Please enter a finite number.');
+        clearResults();
+        hideAbsError();
+        return;
+      }
+
+      clearInputError();
+
+      // Convert everything to Celsius first
+      const celsius = toCelsius(num, getUnit());
+
+      // Below absolute zero?
+      if (celsius < -273.15) {
+        showAbsError();
+        clearResults();
+        return;
+      }
+
+      hideAbsError();
+
+      const fahrenheit = celsius * 9 / 5 + 32;
+      const kelvin     = celsius + 273.15;
+
+      valC.textContent = fmt(celsius);
+      valF.textContent = fmt(fahrenheit);
+      valK.textContent = fmt(kelvin);
+    }
+
+    // ── Events ────────────────────────────────────────────────────────────────
+    // Real-time: validate + auto-convert as user types
+    inputEl.addEventListener('input', doConvert);
+
+    // Re-convert when unit changes (if a value is already entered)
+    document.querySelectorAll('input[name="unit"]').forEach(function(radio) {
+      radio.addEventListener('change', function() {
+        if (inputEl.value.trim() !== '') doConvert();
+      });
+    });
+
+    // Convert button click
+    document.getElementById('convertBtn').addEventListener('click', doConvert);
+
+    // Enter key triggers convert
+    inputEl.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') doConvert();
+    });
+
+    // ── Quick Reference ───────────────────────────────────────────────────────
+    function loadPreset(value, unit) {
+      document.getElementById('unit' + unit).checked = true;
+      inputEl.value = value;
+      doConvert();
+    }
+  </script>
+
+</body>
+</html>
 
